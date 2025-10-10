@@ -15,7 +15,7 @@ MERKEZI_KLASOR_ADI = "XML_Ciktilar"
 
 # Her çalıştırmada benzersiz bir alt klasör oluşturmak için zaman damgası
 CALISMA_ZAMANI = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-# Örn: XML_Ciktilar/20251007_120530
+# Örn: XML_Ciktilar/20251008_154700
 TUM_CIKTILAR_YOLU = os.path.join(MERKEZI_KLASOR_ADI, CALISMA_ZAMANI)
 
 
@@ -99,111 +99,73 @@ def format_date_d_m_yyyy_manual(date_str):
 # Tuple Yapısı (11 Elemanlı):
 # (0:STOK KODU, 1:STOK ADI, 2:MİKTAR [DİNAMİK], 3:BİRİM KOD [DİNAMİK], 4:VADE TARİHİ (BUGÜN, DD.MM.YYYY), 5:KDV ORANI,
 #  6:DEPO KOD, 7:OZELALAN1 [DİNAMİK], 8:ID, 9:TEST_PER_KUTU, 10:SET_COUNT_PER_KUTU)
+
+# STOK_MAP: ARTIK TSH VE BENZERLERİ İÇİN KİT BÜYÜKLÜĞÜNE GÖRE ID'LER KULLANILMAKTADIR.
 STOK_MAP = {
-    # MİKTAR, BİRİM KOD ve OZELALAN1 (indeks 2, 3 ve 7) dinamik olarak hesaplanacağı için boş bırakılmıştır.
-    "Glukoz (Serum/Plazma)": ("3L8222", "CC GLUKOZ (R*5)(20 ML)(1500 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR,
-                              "10", "LOST", "", "6464", 1500, 5),
-    "Üre (Serum/Plazma)": ("4T1220", "CC ÜRE (R1*4+R2*4)(24,8 ML-10 ML)(1400 TEST)(ABBOTT)", "", "",
-                           DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6465", 1400, 4),
-    "Kreatinin (Serum/Plazma)": ("4S9520", "CC KREATİNİN 2 (3600 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10",
-                                 "LOST", "", "6466", 3600, 8),
-    "Sodyum (Serum/Plazma)": ("2P3250", "CC ICT SAMPLE DILUENT (NA,K,CL) (R*10)(54 ML)(21000 TEST)(ABBOTT)", "", "",
-                              DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6467", 21000, 10),
-    "Potasyum (Serum/Plazma)": ("2P3250", "CC ICT SAMPLE DILUENT (NA,K,CL) (R*10)(54 ML)(21000 TEST)(ABBOTT)", "", "",
-                                DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6467", 21000, 10),
-    "Ürik asit (Serum/Plazma)": ("4T1320", "CC ÜRİK ASİT 2 (4* )(640 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR,
-                                 "10", "LOST", "", "6468", 640, 4),
-    "Bilirubin, total (Serum/Plazma)": ("4T0930", "CC TOTAL BİLİRUBİN 2 (R1*8+R2*8) (3600 TEST)(ABBOTT)", "", "",
-                                        DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6469", 3600, 8),
-    "Bilirubin, direkt (Serum/Plazma)": ("8G6322", "CC DİREKT BİLİRUBİN (R1*10+R2*10)(39 ML-13 ML)(2000 TEST)(ABBOTT)",
-                                         "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6469", 2000, 10),
-    "Total Protein": ("4U4430", "CC TOTAL PROTEİN 2 (4*69 ML)(3200 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR,
-                      "10", "LOST", "", "6470", 3200, 4),
-    "Albümin (Serum/Plazma)": ("4T3420", "CC ALBUMİN BCG2 (4* ML)  (1044 TEST) (ABBOTT)", "", "",
-                               DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6471", 1044, 4),
-    "Alanin aminotransferaz (ALT)": ("4S8830", "CC ALT 2 (4*990) (3960 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR,
-                                     "10", "LOST", "", "6472", 3960, 4),
-    "Aspartat aminotransferaz (AST)": ("4S9030", "CC AST 2 (4*990)(3960 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR,
-                                       "10", "LOST", "", "6473", 3960, 4),
-    "Gamma glutamil transferaz (GGT)": ("4T0020", "CC GGT 2 (R1*4+R2*4) (600 TEST) (ABBOTT)", "", "",
-                                        DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6474", 600, 4),
-    "Laktat dehidrogenaz (LDH)": ("4T0320", "CC LDH 2 (R1*4+R2*4) (600 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR,
-                                  "10", "LOST", "", "6475", 600, 4),
-    "Amilaz (Serum/Plazma)": ("4S8920", "CC AMİLAZ 2 (4*14,5ML+4*13,4 ML)(640 TEST) (ABBOTT)", "", "",
-                              DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6476", 640, 4),
-    "Kalsiyum (Serum/Plazma)": ("4S9120", "CC KALSİYUM 2 (1200 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10",
-                                "LOST", "", "6477", 1200, 4),
-    "Fosfor (Serum/Plazma)": ("4T0730", "CC FOSFOR 2 (4*700 LÜK) (2800 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR,
-                              "10", "LOST", "", "6478", 2800, 4),
-    "Kolesterol (Serum/Plazma)": ("4S9220", "CC KOLESTEROL 2 (4*21,6 ML)(1000 TEST) (ABBOTT)", "", "",
-                                  DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6479", 1000, 4),
-    "Alkalen fosfataz (Serum/Plazma)": ("4S8720", "CC ALP (R1*8+R2*8) (1600 TEST ) (ABBOTT)", "", "",
-                                        DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6480", 1600, 8),
-    "Magnezyum (Serum/Plazma)": ("3P6822", "CC MAGNEZYUM (R1*5+R2*5)(39 ML-11 ML)(1000 TEST)(ABBOTT)", "", "",
-                                 DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6481", 1000, 5),
-    "UPRO (24 saatlik idrar)": ("7D7932", "CC URİNE/CSF PROTEİN (UPRO) (209 TEST) (ABBOTT)", "", "",
-                                DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6482", 209, 3),
-    "HDL kolesterol": ("2R0621", "HDL DİREKT (5*57 ML+5*19) (1532 TEST) (ARCHEM-ABBOTT)", "", "",
-                       DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6483", 1532, 5),
-    "Demir (Serum/Plazma)": ("6R5521", "İRON (1100 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10",
-                             "LOST", "", "6484", 1100, 5),
-    "Demir bağlama kapasitesi": ("1R8521", "DEMİR BAĞLAMA KAPASİTESİ (5*40 ML+5*12ML) (1159 TEST) (ARCHEM-ABBOTT)", "",
-                                 "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6484", 1159, 5),
-    "TSH": ("7K6225", "ARC.TSH (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6485", 100, 1),
-    "Serbest T3": ("7K6327", "ARC.FREE T3 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6486", 100,
-                   1),
-    "Serbest T4": ("7K6529", "ARC.FREE T4 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6487", 100,
-                   1),
-    "Follikül stimülan hormon (FSH)": ("7K7525", "ARC.FSH (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST",
-                                       "", "6488", 100, 1),
-    "Lüteinizan hormon (LH)": ("2P4025", "ARC.LH (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                               "6489", 100, 1),
-    "Prolaktin": ("7K7625", "ARC.PROLACTİN (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6490",
-                  100, 1),
-    "Total Testesteron": ("2P1328", "ARC.TESTOSTERONE (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                          "6491", 100, 1),
-    "Kortizol (Serum/Plazma)": ("8D1525", "ARC.CORTİSOL (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST",
-                                "", "6492", 100, 1),
-    "Estradiol (E2) (Serum/Plazma)": ("7K7225", "ARC.ESTRADİOL (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10",
-                                      "LOST", "", "6493", 100, 1),
-    "Progesteron": ("7K7725", "ARC.PROGESTERON (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6494",
-                    100, 1),
+    # ... BİYOKİMYA KİTLERİ
+    "Glukoz (Serum/Plazma)": ("3L8222", "CC GLUKOZ (R*5)(20 ML)(1500 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6464", 1500, 5),
+    "Üre (Serum/Plazma)": ("4T1220", "CC ÜRE (R1*4+R2*4)(24,8 ML-10 ML)(1400 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6465", 1400, 4),
+    "Kreatinin (Serum/Plazma)": ("4S9520", "CC KREATİNİN 2 (3600 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6466", 3600, 8),
+    "Sodyum (Serum/Plazma)": ("2P3250", "CC ICT SAMPLE DILUENT (NA,K,CL) (R*10)(54 ML)(21000 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6467", 21000, 10),
+    "Potasyum (Serum/Plazma)": ("2P3250", "CC ICT SAMPLE DILUENT (NA,K,CL) (R*10)(54 ML)(21000 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6467", 21000, 10),
+    "Ürik asit (Serum/Plazma)": ("4T1320", "CC ÜRİK ASİT 2 (4* )(640 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6468", 640, 4),
+    "TBil_900": ("4T0920", "CC TOTAL BİLİRUBİN (R1*4+R2*4) (900 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6469", 900, 4),
+    "TBil_3600": ("4T0930", "CC TOTAL BİLİRUBİN 2 (R1*8+R2*8) (3600 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6469", 3600, 8),
+    "Bilirubin, direkt (Serum/Plazma)": ("8G6322", "CC DİREKT BİLİRUBİN (R1*10+R2*10)(39 ML-13 ML)(2000 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6469", 2000, 10),
+    "Total Protein": ("4U4430", "CC TOTAL PROTEİN 2 (4*69 ML)(3200 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6470", 3200, 4),
+    "Albümin (Serum/Plazma)": ("4T3420", "CC ALBUMİN BCG2 (4* ML)  (1044 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6471", 1044, 4),
+    "ALT_1200": ("4S8820", "CC ALT 2 (R1*4 + R2*4) (1200 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6472", 1200, 4),
+    "ALT_3960": ("4S8830", "CC ALT 2 (4*990) (3960 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6472", 3960, 4),
+    "AST_1200": ("4S9020", "CC AST 2 (R1*4+R2*4) (1200 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6473", 1200, 4),
+    "AST_3960": ("4S9030", "CC AST 2 (4*990)(3960 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6473", 3960, 4),
+    "Gamma glutamil transferaz (GGT)": ("4T0020", "CC GGT 2 (R1*4+R2*4) (600 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6474", 600, 4),
+    "Laktat dehidrogenaz (LDH)": ("4T0320", "CC LDH 2 (R1*4+R2*4) (600 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6475", 600, 4),
+    "Amilaz (Serum/Plazma)": ("4S8920", "CC AMİLAZ 2 (4*14,5ML+4*13,4 ML)(640 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6476", 640, 4),
+    "Kalsiyum (Serum/Plazma)": ("4S9120", "CC KALSİYUM 2 (1200 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6477", 1200, 4),
+    "Fosfor (Serum/Plazma)": ("4T0730", "CC FOSFOR 2 (4*700 LÜK) (2800 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6478", 2800, 4),
+    "Kolesterol (Serum/Plazma)": ("4S9220", "CC KOLESTEROL 2 (4*21,6 ML)(1000 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6479", 1000, 4),
+    "Alkalen fosfataz (Serum/Plazma)": ("4S8720", "CC ALP (R1*8+R2*8) (1600 TEST ) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6480", 1600, 8),
+    "Magnezyum (Serum/Plazma)": ("3P6822", "CC MAGNEZYUM (R1*5+R2*5)(39 ML-11 ML)(1000 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6481", 1000, 5),
+    "UPRO (24 saatlik idrar)": ("7D7932", "CC URİNE/CSF PROTEİN (UPRO) (209 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6482", 209, 3),
+    "HDL kolesterol": ("2R0621", "HDL DİREKT (5*57 ML+5*19) (1532 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6483", 1532, 5),
+    "Demir (Serum/Plazma)": ("6R5521", "İRON (1100 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6484", 1100, 5),
+    "Demir bağlama kapasitesi": ("1R8521", "DEMİR BAĞLAMA KAPASİTESİ (5*40 ML+5*12ML) (1159 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6484", 1159, 5),
+    "TSH_100": ("7K6225", "ARC.TSH (100 TEST))", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6485", 100, 1),
+    "TSH_2000": ("7K6230", "ARC.TSH (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6485", 2000, 4),
+    "T3_100": ("7K6327", "ARC.FREE T3 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6486", 100, 1),
+    "T3_2000": ("7K6332", "ARC.FREE T3 (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6486", 2000, 4),
+    "T4_100": ("7K6529", "ARC.FREE T4 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6487", 100, 1),
+    "T4_2000": ("7K6534", "ARC.FREE T4 (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6487", 2000, 4),
+    "Follikül stimülan hormon (FSH)": ("7K7525", "ARC.FSH (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6488", 100, 1),
+    "Lüteinizan hormon (LH)": ("2P4025", "ARC.LH (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6489", 100, 1),
+    "Prolaktin": ("7K7625", "ARC.PROLACTİN (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6490", 100, 1),
+    "Total Testesteron": ("2P1328", "ARC.TESTOSTERONE (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6491", 100, 1),
+    "Kortizol (Serum/Plazma)": ("8D1525", "ARC.CORTİSOL (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6492", 100, 1),
+    "Estradiol (E2) (Serum/Plazma)": ("7K7225", "ARC.ESTRADİOL (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6493", 100, 1),
+    "Progesteron": ("7K7725", "ARC.PROGESTERON (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6494", 100, 1),
     "İPTH": ("8K2528", "ARC.İPTH (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6495", 100, 1),
-    "TOTAL PSA": ("7K7025", "ARC.TOTAL PSA (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6496",
-                  100, 1),
-    "Alfa-Fetoprotein (AFP)": ("3P3625", "ARC.AFP (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                               "6497", 100, 1),
+    "TOTAL PSA": ("7K7025", "ARC.TOTAL PSA (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6496", 100, 1),
+    "Alfa-Fetoprotein (AFP)": ("3P3625", "ARC.AFP (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6497", 100, 1),
     "CEA": ("7K6827", "ARC.CEA (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6498", 100, 1),
-    "CA 19-9 (Serum/Plazma)": ("2K9132", "ARC.CA 19-9 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                               "6499", 100, 1),
-    "CA 15-3 (Serum/Plazma)": ("2K4427", "ARC.CA15-3 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                               "6500", 100, 1),
-    "CA 125 (Serum/Plazma)": ("2K4529", "ARC.CA 125 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                              "6501", 100, 1),
-    "Ferritin (Serum/Plazma)": ("7K5925", "ARC.FERRİTİN (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST",
-                                "", "6502", 100, 1),
-    "Beta HCG (Serum/Plazma)": ("7K7825", "ARC.TOTAL BHCG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST",
-                                "", "6503", 100, 1),
-    "Vitamin B12": ("7K6125", "ARC.VİTAMİN B12 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6504",
-                    100, 1),
-    "Folat (Serum/Plazma)": ("1P7425", "ARC.FOLATE (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                             "6505", 100, 1),
-    "İnsülin": ("8K4128", "ARC.İNSULİN (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6506", 100,
-                1),
-    "Anti TG": ("2K4625", "ARC.ANTİ TG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6507", 100,
-                1),
-    "Anti TPO": ("2K4725", "ARC.ANTİ TPO (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6508", 100,
-                 1),
-    "25-Hidroksi vitamin D": ("5P0225", "ARC.VİTAMİN D (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "",
-                              "6509", 100, 1),
-    "Prokalsitonin (Serum/Plazma)": ("6P2225", "ARC.BRAHMS PCT (100 TEST)(PROKALSİTONİN)", "", "",
-                                     DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6510", 100, 1),
-    "Troponin I/T*": ("3P2527", "ARC.TROPONİN (100 TEST )", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6511",
-                      100, 1),
-    "Tiroglobulin": ("5P2025", "ARC.TG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6512", 100,
-                     1),
-    "NT PROBNP": ("2R1025", "ARC.NT-proBNP (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6513",
-                  100, 1),
+    "CA 19-9 (Serum/Plazma)": ("2K9132", "ARC.CA 19-9 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6499", 100, 1),
+    "CA 15-3 (Serum/Plazma)": ("2K4427", "ARC.CA15-3 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6500", 100, 1),
+    "CA 125 (Serum/Plazma)": ("2K4529", "ARC.CA 125 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6501", 100, 1),
+    "Ferritin_100": ("7K5925", "ARC.FERRİTİN (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6502", 100, 1),
+    "Ferritin_2000": ("7K5930", "ARC.FERRİTİN (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6502", 2000, 4),
+    "Beta HCG (Serum/Plazma)": ("7K7825", "ARC.TOTAL BHCG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6503", 100, 1),
+    "B12_100": ("7K6125", "ARC.VİTAMİN B12 (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6504", 100, 1),
+    "B12_500": ("7K6135", "ARC.VİTAMİN B12 (500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6504", 500, 1),
+    "Folat_100 (Serum/Plazma)": ("1P7425", "ARC.FOLATE (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6505", 100, 1),
+    "Folat_500 (Serum/Plazma)": ("1P7435", "ARC.FOLATE (500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6505", 500, 1),
+    "İnsülin": ("8K4128", "ARC.İNSULİN (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6506", 100, 1),
+    "Anti TG": ("2K4625", "ARC.ANTİ TG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6507", 100, 1),
+    "Anti TPO": ("2K4725", "ARC.ANTİ TPO (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6508", 100, 1),
+    "VitD_100": ("5P0225", "ARC.VİTAMİN D (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6509", 100, 1),
+    "VitD_2000": ("5P0230", "ARC.VİTAMİN D (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6509", 2000, 4),
+    "Prokalsitonin (Serum/Plazma)": ("6P2225", "ARC.BRAHMS PCT (100 TEST)(PROKALSİTONİN)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6510", 100, 1),
+    "Troponin I/T*": ("3P2527", "ARC.TROPONİN (100 TEST )", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6511", 100, 1),
+    "Tiroglobulin": ("5P2025", "ARC.TG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6512", 100, 1),
+    "NT PROBNP": ("2R1025", "ARC.NT-proBNP (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6513", 100, 1),
     "LİPAZ": ("6R5523", "LİPAZ (1540 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6514", 1540, 5),
     "C reaktif protein (CRP)": ("6T8163", "CRP TURBI WR (5*455) (2275 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6515", 2275, 5),
     "Glike hemoglobin (Hb A1C)": ("1R8721", "HbA1c DIREKT (571 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6516", 571, 1),
@@ -222,10 +184,14 @@ STOK_MAP = {
     "Total IgE": ("1R8921", "IGE (364 TEST) (ARCHEM-ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 364, 2),
     "Digoksin (Serum/Plazma)": ("1E0621", "CC DİGOXİN (450 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 450, 2),
     "LAKTİK ASİT": ("4T3020", "CC LACTİC ACİD (400 TEST) (ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 400, 2),
-    "HBsAg": ("2G2225", "ARC.HBSAG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
-    "Anti HCV": ("6C3727", "ARC.ANTİ HCV (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
-    "Anti HIV": ("6C3727", "ARC.ANTİ HİV AG/AB COMBO (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
-    "Anti HBs": ("7C1829", "ARC.ANTİ HBS (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
+    "Hbsag_100": ("2G2225", "ARC.HBSAG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
+    "Hbsag_500": ("2G2235", "ARC.HBSAG (500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 500, 1),
+    "Hcv_100": ("6C3728", "ARC.ANTİ HCV II (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
+    "Hcv_2000": ("6C3733", "ARC.ANTİ HCV II (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 2000, 4),
+    "Hiv_100": ("6C3727", "ARC.ANTİ HİV AG/AB COMBO (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
+    "Hiv_2000": ("4J2732", "ARC.ANTİ HİV AG/AB COMBO (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 2000, 4),
+    "HBs_100": ("7C1829", "ARC.ANTİ HBS (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
+    "HBs_2000": ("7C1833", "ARC.ANTİ HBS (4*500 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 2000, 4),
     "Anti HAV IgM": ("6C3027", "ARC.ANTİ HAV IGM (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
     "Anti HAV IgG (ANTİ HAV TOTAL)": ("6C2927", "ARC.ANTİ HAV TOTAL (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
     "HBeAg": ("6C3227", "ARC.HBEAG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
@@ -243,8 +209,6 @@ STOK_MAP = {
     "EBV EBNA IGG": ("3P6725", "ARC.EBV EBNA-1 IGG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
     "EBNA VCA IGG": ("3P6525", "ARC.EBV VCA IGG (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
     "EBNA VCA IGM": ("3P6625", "ARC.EBV VCA IGM (100 TEST)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 100, 1),
-
-
 
     # ********************************************************* ALNTY KITLER  *********************************************************
     "ALNTY_TSH": ("7P4820", "ALNTY. TSH (2*100 TEST)(ABBOTT)", "", "", DINAMIK_VADE_TARIHI_STR, "10", "LOST", "", "6517", 200, 2),
@@ -267,12 +231,10 @@ TEST_ADI_SUTUNU = "TEST ADI"
 
 
 # =========================================================================
-# 3. HASTANE KONFİGÜRASYONU (Değişiklik yapılmamıştır)
+# 3. HASTANE KONFİGÜRASYONU (Kayıplar Giderildi ve Eşleştirme Eklendi)
 # =========================================================================
 
 HASTANE_CONFIGS = [
-    # Ardahan ve Posof için yuvarlama kuralı artık aktif.
-    # Boş hücreler (NaN) atlanacak, 0 girilenler 1 Set/Kutuya yuvarlanacaktır.
     {
         "CARI_ADI": "ARDAHAN DEVLET HASTANESİ",
         "input_path": r"E:\Sayımlar\Lost Hastane Sayımları\Eylül\Ardahan Devlet\Eliza\23-ARDAHAN DEVLET HASTANESİ ELİZA 2025 YILI SAYIMLARI.XLSX",
@@ -281,7 +243,12 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "ARDAHAN DH",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_2000"},
+        "kit_eslestirme": {"HBsAg": "Hbsag_100"},
+        "kit_eslestirme": {"Anti HCV": "Hcv_100"},
+        "kit_eslestirme": {"Anti HIV": "Hiv_100"},
+        "kit_eslestirme": {"Anti HBs": "Hbs_100"},
     },
     {
         "CARI_ADI": "ARDAHAN DEVLET HASTANESİ",
@@ -291,7 +258,17 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "ARDAHAN DH",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2,5 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_2000"},
+        "kit_eslestirme": {"Serbest T3": "T3_2000"},
+        "kit_eslestirme": {"Serbest T4": "T4_2000"},
+        "kit_eslestirme": {"Folat (Serum/Plazma)": "Folat_500"},
+        "kit_eslestirme": {"Vitamin B12)": "B12_500"},
+        "kit_eslestirme": {"Ferritin (Serum/Plazma)": "Ferritin_2000"},
+        "kit_eslestirme": {"Alanin aminotransferaz (ALT)": "ALT_3960"},
+        "kit_eslestirme": {"Aspartat aminotransferaz (AST)": "AST_3960"},
+        "kit_eslestirme": {"25-Hidroksi vitamin D": "VitD_2000"},
+        "kit_eslestirme": {"Bilirubin, total (Serum/Plazma)": "TBil_3600"},
     },
     {
         "CARI_ADI": "ARDAHAN MERKEZ HALK SAĞLIĞI LABORATUVARI",
@@ -301,7 +278,10 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "ARDAHAN HALK",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "3 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"Alanin aminotransferaz (ALT)": "ALT_1200"},
+        "kit_eslestirme": {"Aspartat aminotransferaz (AST)": "AST_1200"},
+        "kit_eslestirme": {"Bilirubin, total (Serum/Plazma)": "TBil_900"},
     },
     {
         "CARI_ADI": "ATATÜRK ÜNİVERSİTESİ ARAŞTIRMA HASTANESİ MİKROBİYOLOJİ LABORATUVARI",
@@ -311,7 +291,14 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "ATATÜRK ÜNi.",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_2000"},
+        "kit_eslestirme": {"Serbest T3": "T3_2000"},
+        "kit_eslestirme": {"Serbest T4": "T4_2000"},
+        "kit_eslestirme": {"HBsAg": "Hbsag_500"},
+        "kit_eslestirme": {"Anti HCV": "Hcv_2000"},
+        "kit_eslestirme": {"Anti HIV": "Hiv_2000"},
+        "kit_eslestirme": {"Anti HBs": "Hbs_2000"},
     },
     {
         "CARI_ADI": "GÖLE DEVLET HASTANESİ",
@@ -321,7 +308,10 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "GÖLE DH",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"Alanin aminotransferaz (ALT)": "ALT_1200"},
+        "kit_eslestirme": {"Aspartat aminotransferaz (AST)": "AST_1200"},
+        "kit_eslestirme": {"Bilirubin, total (Serum/Plazma)": "TBil_900"},
     },
     {
         "CARI_ADI": "IĞDIR DR. NEVRUZ EREZ DEVLET HASTANESİ",
@@ -331,7 +321,14 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "IĞDIR DH",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2,5 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_2000"},
+        "kit_eslestirme": {"Serbest T3": "T3_2000"},
+        "kit_eslestirme": {"Serbest T4": "T4_2000"},
+        "kit_eslestirme": {"HBsAg": "Hbsag_500"},
+        "kit_eslestirme": {"Anti HCV": "Hcv_2000"},
+        "kit_eslestirme": {"Anti HIV": "Hiv_2000"},
+        "kit_eslestirme": {"Anti HBs": "Hbs_2000"},
     },
     {
         "CARI_ADI": "IĞDIR HALK SAĞLIĞI LABORATUVARI",
@@ -341,7 +338,20 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "IĞDIR HSM",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2,5 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_2000"},
+        "kit_eslestirme": {"Serbest T3": "T3_2000"},
+        "kit_eslestirme": {"Serbest T4": "T4_2000"},
+        "kit_eslestirme": {"HBsAg": "Hbsag_100"},
+        "kit_eslestirme": {"Anti HCV": "Hcv_100"},
+        "kit_eslestirme": {"Anti HIV": "Hiv_100"},
+        "kit_eslestirme": {"Anti HBs": "Hbs_100"},
+        "kit_eslestirme": {"Folat (Serum/Plazma)": "Folat_500"},
+        "kit_eslestirme": {"Vitamin B12)": "B12_500"},
+        "kit_eslestirme": {"Ferritin (Serum/Plazma)": "Ferritin_2000"},
+        "kit_eslestirme": {"Alanin aminotransferaz (ALT)": "ALT_3960"},
+        "kit_eslestirme": {"Aspartat aminotransferaz (AST)": "AST_1200"},
+        "kit_eslestirme": {"Bilirubin, total (Serum/Plazma)": "TBil_3600"},
     },
     {
         "CARI_ADI": "GİRESUN ÖZEL KENT HASTANESİ",
@@ -351,7 +361,18 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "GİRESUN KENT",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2,5 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_100"},
+        "kit_eslestirme": {"Serbest T3": "T3_100"},
+        "kit_eslestirme": {"Serbest T4": "T4_100"},
+        "kit_eslestirme": {"HBsAg": "Hbsag_100"},
+        "kit_eslestirme": {"Anti HCV": "Hcv_100"},
+        "kit_eslestirme": {"Anti HIV": "Hiv_100"},
+        "kit_eslestirme": {"Anti HBs": "Hbs_100"},
+        "kit_eslestirme": {"Folat (Serum/Plazma)": "Folat_500"},
+        "kit_eslestirme": {"Vitamin B12)": "B12_500"},
+        "kit_eslestirme": {"Ferritin (Serum/Plazma)": "Ferritin_2000"},
+        "kit_eslestirme": {"25-Hidroksi vitamin D": "VitD_2000"},
     },
     {
         "CARI_ADI": "KTÜ TIP FAKÜLTESİ FARABİ HASTANESİ",
@@ -361,7 +382,7 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "KTÜ ACİL",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2,5 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
     },
     {
         "CARI_ADI": "POSOF İLÇE DEVLET HASTANESİ",
@@ -371,7 +392,10 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "POSOF DH",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "3 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"Alanin aminotransferaz (ALT)": "ALT_1200"},
+        "kit_eslestirme": {"Aspartat aminotransferaz (AST)": "AST_1200"},
+        "kit_eslestirme": {"Bilirubin, total (Serum/Plazma)": "TBil_900"},
     },
     {
         "CARI_ADI": "RİZE DEVLET HASTANESİ",
@@ -381,7 +405,14 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "RİZE DEVLET",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_2000"},
+        "kit_eslestirme": {"Serbest T3": "T3_2000"},
+        "kit_eslestirme": {"Serbest T4": "T4_2000"},
+        "kit_eslestirme": {"HBsAg": "Hbsag_500"},
+        "kit_eslestirme": {"Anti HCV": "Hcv_2000"},
+        "kit_eslestirme": {"Anti HIV": "Hiv_2000"},
+        "kit_eslestirme": {"Anti HBs": "Hbs_2000"},
     },
     {
         "CARI_ADI": "RİZE EĞİTİM VE ARAŞTIRMA HASTANESİ",
@@ -391,13 +422,20 @@ HASTANE_CONFIGS = [
         "sheet_prefix": "RİZE EĞİTİM",
         "override_month_name": "EYLÜL",
         "ihtiyac_sutunu": "2 AYLIK İHTİYAÇ MİKTARI (TEST)",
-        "apply_min_roundup": True  # <-- 0 ise 1 Set/Kutuya yuvarla
+        "apply_min_roundup": True,
+        "kit_eslestirme": {"TSH": "TSH_2000"},
+        "kit_eslestirme": {"Serbest T3": "T3_2000"},
+        "kit_eslestirme": {"Serbest T4": "T4_2000"},
+        "kit_eslestirme": {"HBsAg": "Hbsag_500"},
+        "kit_eslestirme": {"Anti HCV": "Hcv_2000"},
+        "kit_eslestirme": {"Anti HIV": "Hiv_2000"},
+        "kit_eslestirme": {"Anti HBs": "Hbs_2000"},
     },
 ]
 
 
 # =========================================================================
-# 4. İŞLEME FONKSİYONLARI
+# 4. İŞLEME FONKSİYONLARI (Güncel Versiyon - Kit Eşleştirmesi Dahil)
 # =========================================================================
 
 # DEPO PROGRAMI FORMATINA UYGUN XML OLUŞTURMA FONKSİYONU
@@ -405,8 +443,7 @@ def generate_xml_content(lines, cari_id, cari_adi):
     """
     Verilen satırları kullanarak DEPO PROGRAMI formatına uygun (element tabanlı) XML içeriğini oluşturur.
     """
-
-    # --- Sabit/Tahmini Başlık Değerleri ---
+    # ... (Fonksiyonun İçeriği Aynı Kaldı) ...
     OWNERID = "12600"
     FISNO = str(random.randint(90000000, 99999999))
 
@@ -512,7 +549,9 @@ def process_hospital_data(config):
     sheet_prefix = config["sheet_prefix"]
     override_month_name = config.get("override_month_name")
     ihtiyac_sutunu = config["ihtiyac_sutunu"]
-    apply_min_roundup = config["apply_min_roundup"]  # 0 girilenleri 1 Set/Kutuya yuvarlama kuralı
+    apply_min_roundup = config["apply_min_roundup"]
+    # YENİ: Hastaneye özel kit eşleştirme haritasını al
+    hospital_kit_map = config.get("kit_eslestirme", {})
 
     print(f"\n--- {cari_adi} ({cari_id}) İşleniyor ---")
     print(f"Excel Yolu: {input_path}")
@@ -540,20 +579,24 @@ def process_hospital_data(config):
 
         # Her satırı döngüye al
         for index, row in df.iterrows():
-            # NaN veya boşluk içeren değerleri atla.
+
             test_adi_raw = row.get(TEST_ADI_SUTUNU)
             if pd.isna(test_adi_raw):
                 continue
 
-            test_adi = str(test_adi_raw).strip()
+            test_adi = str(test_adi_raw).strip()  # Excel'deki test adı (Örn: "TSH")
 
-            #print(f"DEBUG: Okunan Test Adı: '{test_adi}'")
+            # --- KRİTİK ADIM: STOK KODUNU HASTANEYE ÖZEL BULMA ---
+            # 1. Hastaneye özel bir kit eşleşmesi var mı kontrol et
+            # Eğer map'te "TSH" varsa TSH_2000'i döner. Yoksa, orijinal test_adi'ni ("Serbest T3") döner.
+            stok_map_key = hospital_kit_map.get(test_adi, test_adi)
 
-            # 1. Filtre: Test Adı, STOK_MAP'te tanımlı mı?
-            if test_adi not in STOK_MAP:
+            # 2. Filtre: Bulunan anahtar (stok_map_key), STOK_MAP'te tanımlı mı?
+            if stok_map_key not in STOK_MAP:
                 continue
 
-            stok_bilgisi = STOK_MAP[test_adi]
+            # 3. İlgili kitin bilgilerini al
+            stok_bilgisi = STOK_MAP[stok_map_key]
 
             # Set bazlı hesaplama için gerekli bilgileri al
             TEST_PER_KUTU = stok_bilgisi[9]
@@ -569,8 +612,7 @@ def process_hospital_data(config):
 
             ihtiyac_miktari_raw = row.get(ihtiyac_sutunu)
 
-            # --- MİKTAR KONTROLÜ BAŞLANGIÇ ---
-
+            # --- MİKTAR KONTROLÜ ---
             if pd.isna(ihtiyac_miktari_raw):
                 continue
 
@@ -578,39 +620,28 @@ def process_hospital_data(config):
                 ihtiyac_miktari = int(ihtiyac_miktari_raw)
             except (ValueError, TypeError):
                 continue
-
             # --- MİKTAR KONTROLÜ BİTİŞ ---
 
             # 2. Yuvarlama Mantığı (SET Bazlı)
-
             istenilen_set_miktari = 0
 
-            # 1. Aşama: Sıfır ve Negatif Kontrolü
             if ihtiyac_miktari <= 0:
                 if ihtiyac_miktari == 0 and apply_min_roundup:
-                    # Minimum 1 Set sipariş et
-                    istenilen_set_miktari = 1
+                    istenilen_set_miktari = 1  # 0 ise 1 Set/Kutuya yuvarla
                 else:
-                    continue
+                    continue  # Negatif veya 0 (yuvarlama pasifse) atla
 
-            # 2. Aşama: Pozitif Miktar Hesaplama ve Set Bazlı Yuvarlama
             elif ihtiyac_miktari > 0:
-                # İstenen Test miktarını Set sayısına çevir
                 set_miktari_float = ihtiyac_miktari / TEST_PER_SET
-
-                # Yukarıya Yuvarlama (math.ceil) kullanarak en yakın TAM Set sayısını bul.
+                # Her zaman yukarı yuvarla
                 istenilen_set_miktari = math.ceil(set_miktari_float)
 
             # --- XML ÇIKTI DEĞERLERİNİN HESAPLANMASI ---
-
-            # Hesaplanan Set sayısını, XML'e yazılacak olan toplam TEST miktarına çevir.
             xml_test_miktari = istenilen_set_miktari * TEST_PER_SET
-
             miktar_str = str(int(xml_test_miktari))
             birim_kod_yeni = "TEST"
 
             # --- OZELALAN1 HESAPLAMASI (Kutu + Set Bilgisi) ---
-
             ozelalan1_str = ""
 
             if SET_PER_KUTU > 0 and istenilen_set_miktari > 0:
@@ -625,21 +656,20 @@ def process_hospital_data(config):
                         ozelalan1_str += " + "
                     ozelalan1_str += f"{kalan_set_sayisi}SET"
 
-                if not ozelalan1_str and istenilen_set_miktari > 0:
-                    # Sadece tam kutu sipariş edilmişse (Örn: 4 set = 1K)
-                    ozelalan1_str = f"{istenilen_set_miktari // SET_PER_KUTU}K"
+                # Eğer tam kutu sipariş edilmişse ve ozelalan1_str boşsa (Örn: 4 set = 1K)
+                if not ozelalan1_str and istenilen_set_miktari > 0 and tam_kutu_sayisi > 0:
+                    ozelalan1_str = f"{tam_kutu_sayisi}K"
 
             elif istenilen_set_miktari > 0:
-                # Kutu bilgisi yoksa sadece set sayısını yaz
+                # Kutu bilgisi yoksa (SET_PER_KUTU=0 veya 1 ise) sadece set sayısını yaz
                 ozelalan1_str = f"{istenilen_set_miktari}SET"
 
             # --- XML ÇIKTI VERİSİNİN OLUŞTURULMASI ---
 
-            # Yeni tuple'ı oluştur (miktar, birim kodu ve OZELALAN1 güncel değerlerle değiştir)
-            # Tuple yapısı: 0, 1, 2(MİKTAR), 3(BİRİM KOD), 4, 5, 6, 7(OZELALAN1), 8(ID)
+            # Yeni tuple'ı oluştur (stok kodu ve stok adı da artık seçilen kitle ait)
             new_stok_bilgisi = (
-                stok_bilgisi[0],  # 0: STOK KODU
-                stok_bilgisi[1],  # 1: STOK ADI
+                stok_bilgisi[0],  # 0: STOK KODU (Seçilen kitin kodu)
+                stok_bilgisi[1],  # 1: STOK ADI (Seçilen kitin adı)
                 miktar_str,  # 2: MİKTAR (TEST Cinsinden)
                 birim_kod_yeni,  # 3: BİRİM KOD (TEST)
                 stok_bilgisi[4],  # 4: VADE TARİHİ
@@ -650,13 +680,14 @@ def process_hospital_data(config):
             )
             xml_lines_data.append(new_stok_bilgisi)
 
+            # Debug çıktısı: Hangi kitin seçildiğini göster
             print(
-                f"-> XML: {test_adi} -> İhtiyaç: {ihtiyac_miktari} Test -> Sipariş: {ozelalan1_str} ({miktar_str} TEST)")
+                f"-> XML: {test_adi} -> Kit ID: {stok_map_key} -> Sipariş: {ozelalan1_str} ({miktar_str} TEST)")
 
         # XML Oluşturma ve Kaydetme
         if not xml_lines_data:
             print(
-                f"UYARI: '{cari_adi}' için XML oluşturulmadı. Eklenecek satır bulunamadı (Tüm satırlar boş, sıfır veya eşleşmeyen test adlarıydı).")
+                f"UYARI: '{cari_adi}' için XML oluşturulmadı. Eklenecek satır bulunamadı.")
             return
 
         # generate_xml_content fonksiyonu burada çağrılır.
